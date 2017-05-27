@@ -1,0 +1,18 @@
+#!/sbin/sh
+
+mount /system;
+if [ -f $root/sdcard/restore/boot.img ];
+then
+echo "Restoring boot.img...";
+dd if=$root/sdcard/restore/boot.img of=$root/dev/block/bootdevice/by-name/boot;
+rm -rf /system/lib/modules;
+cp -r $root/sdcard/restore/modules $root/system/lib;
+set_perm_recursive 0 0 0755 0644 $root/system/lib/modules;
+rm -rf $root/system/backup-check;
+rm -rf $root/sdcard/restore;
+else
+echo "boot.img not present in /sdcard/restore";
+echo "aborting...";
+exit 1;
+fi;
+umount /system;
